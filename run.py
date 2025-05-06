@@ -21,11 +21,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='TimesNet')
 
     # basic config
-    parser.add_argument('--task_name', type=str, required=True, default='long_term_forecast',
+    parser.add_argument('--task_name', type=str, required=False, default='long_term_forecast',
                         help='task name, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
-    parser.add_argument('--is_training', type=int, required=True, default=1, help='status')
-    parser.add_argument('--model_id', type=str, required=True, default='test', help='model id')
-    parser.add_argument('--model', type=str, required=True, default='Autoformer',
+    parser.add_argument('--is_training', type=int, required=False, default=1, help='status')
+    parser.add_argument('--model_id', type=str, required=False, default='test', help='model id')
+    parser.add_argument('--model', type=str, required=False, default='SoloLinear',
                         help='model name, options: [Autoformer, Transformer, TimesNet]')
     parser.add_argument('--cycle', type=bool, default=True, help='Cyclic information')
     parser.add_argument('--cycle_len', type=int, default=24, help='Cyclic len')
@@ -35,10 +35,10 @@ if __name__ == '__main__':
 
 
     # data loader
-    parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type')
-    parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file')
-    parser.add_argument('--data_path', type=str, default='ETTm1.csv', help='data file')
-    parser.add_argument('--features', type=str, default='M',
+    parser.add_argument('--data', type=str, required=False, default='ETTh1', help='dataset type')
+    parser.add_argument('--root_path', type=str, default='./dataset/ETT-small/', help='root path of the data file')
+    parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file')
+    parser.add_argument('--features', type=str, default='N',
                         help='forecasting task, options:[M, S, MS, N]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate, N: Exogenous predict Endogenous')
     parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task')
     parser.add_argument('--freq', type=str, default='h',
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     parser.add_argument('--d_conv', type=int, default=4, help='conv kernel size for Mamba')
     parser.add_argument('--top_k', type=int, default=5, help='for TimesBlock')
     parser.add_argument('--num_kernels', type=int, default=6, help='for Inception')
-    parser.add_argument('--enc_in', type=int, default=7, help='encoder input size')
-    parser.add_argument('--dec_in', type=int, default=7, help='decoder input size')
+    parser.add_argument('--enc_in', type=int, default=6, help='encoder input size')
+    parser.add_argument('--dec_in', type=int, default=6, help='decoder input size')
     parser.add_argument('--c_out', type=int, default=1, help='output size')
     parser.add_argument('--d_model', type=int, default=128, help='dimension of model')
     parser.add_argument('--n_heads', type=int, default=4, help='num of heads')
