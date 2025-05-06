@@ -407,8 +407,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         model_name = setting.split('_')[6]  # model=6  std=25 Assuming the model name is the first part of the setting
         result_filename = f"{model_name}.txt"
         # # #
-        #f = open("./save_txt/Search/" + result_filename, 'a')
-        f = open(f"./save_txt/" + result_filename, 'a')
+        f = open(f"./" + result_filename, 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))
         f.write('\n')
