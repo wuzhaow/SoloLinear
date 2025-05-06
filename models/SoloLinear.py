@@ -100,9 +100,6 @@ class TransposeLayer(nn.Module):
         return x.transpose(self.dim0, self.dim1)
 
 class Model(nn.Module):
-    """
-    Paper link: https://arxiv.org/abs/2310.06625
-    """
 
     def __init__(self, configs):
         super(Model, self).__init__()
@@ -117,9 +114,7 @@ class Model(nn.Module):
         self.init_type = configs.init_type
         self.mean = configs.mean
         self.std = configs.std
-        # Embedding
-        # self.enc_embedding = DataEmbedding_wo_pos(configs.enc_in, configs.d_model, configs.embed, configs.freq,
-        #                                             configs.dropout)
+       
         self.demo = series_decomp(configs.moving_avg)
         # Decoder
         if self.task_name == 'long_term_forecast' or self.task_name == 'without_point'or self.task_name == 'm_ms_forecast' :
@@ -129,12 +124,7 @@ class Model(nn.Module):
                 nn.Linear(self.seq_len, self.pred_len),
                 TransposeLayer(dim0=1, dim1=2),
             )
-        #if self.task_name == 'without_point'or self.task_name == 'm_ms_forecast' :
-        # self.FLinear1 = nn.Linear(configs.enc_in, configs.enc_in).to(torch.cfloat)
-        # self.FLinear2 = nn.Linear(configs.enc_in, configs.enc_in).to(torch.cfloat)
-        # self.Linear1 = nn.Linear(configs.cycle_len * configs.enc_in, configs.cycle_len* configs.enc_in)
-
-        # else:
+      
         self.FLinear1 = nn.Linear(configs.enc_in, 1).to(torch.cfloat)
         self.FLinear2 = nn.Linear(configs.enc_in, 1).to(torch.cfloat)
         self.Linear1 = nn.Linear(configs.cycle_len * configs.enc_in, configs.cycle_len)
@@ -148,11 +138,8 @@ class Model(nn.Module):
         else:
             self.Linear2 = nn.Linear(self.seq_len//configs.cycle_len, self.seq_len//configs.cycle_len)
 
-       # self.linear_mean = nn.Linear(configs.enc_in, 1)
-        #self.linear_std = nn.Linear(configs.enc_in, 1)
-        #self.revin = RevIN_P(configs.enc_in)
-        #self.A = nn.Parameter(torch.randn(1, 1, configs.enc_in),requires_grad=True)
-        init_type = self.init_type  # 可选：'zero'、'normal'、'uniform
+    
+        init_type = self.init_type  
 
         self.patch = False
         if self.patch:
@@ -163,7 +150,7 @@ class Model(nn.Module):
                                      self.seq_len // configs.cycle_len)
         else:
             pass
-            #self.Linear2 = nn.Linear(self.seq_len//configs.cycle_len, self.seq_len//configs.cycle_len)
+          
 
         self.init_linear_weights(init_type)
 
@@ -172,20 +159,7 @@ class Model(nn.Module):
 
     def forecast(self, x_enc, x_mark_enc, x_dec, x_mark_dec, batch_point_y):
         x_enc_pre = x_enc
-        # batchsize, Seq, d = x_enc_pre.shape
-        # list23 = x_enc[:, [23,47,71,95],:].mean(dim=1,keepdim=True) # B 1 D
-        # dist = list23 * self.A
-        # dist = torch.abs(dist - batch_point_y) # B 1 D
-        #
-        #
-        # exp_dist = 1 / (dist + 1e-10)
-        # exp_max, _ = torch.max(exp_dist, dim=-1, keepdim=True)
-        # exp_max = exp_max
-        # #
-        # p = exp_dist / exp_max * 0.99
-        # index = torch.topk(p, int(d * 0.95), dim=2)
-        # resample_matrix = self.bernoulli_gumbel_rsample(p) # B S D * B 1 D
-        # resample_matrix.scatter_(2, index.indices, 1)
+      
         if self.use_norm:
             #x_enc = self.revin(x_enc, 'norm')
             means = x_enc.mean(1, keepdim=True).detach() # B 1 D
@@ -197,11 +171,7 @@ class Model(nn.Module):
             last_std = stdev.mean(2,keepdim=True).detach()
         B, S, N = x_enc.shape
 
-        # Embedding
-        # if self.data == 'battery':
-        # 	enc_out = self.enc_embedding(x_enc, None)
-        # else:
-        # 	enc_out = self.enc_embedding(x_enc, x_mark_enc)
+      
         season, trend = self.demo(x_enc)
 
         trend_out = torch.fft.rfft(trend, dim=1, norm ="ortho")  # b s/2 + 1 d
@@ -310,20 +280,14 @@ class Model(nn.Module):
         return dec_out
 
     def init_linear_weights(self, init_type='zero'):
-        """统一初始化所有线性层权重
-        Args:
-            init_type: 'zero'（全0）, 'normal_0.1'（均值0标准差0.1的正态分布）,
-                     'uniform_0.1'（均匀分布-0.1~0.1）
-        """
-        for m in self.modules():  # 递归遍历所有子模块
+       
+        for m in self.modules():  
             if isinstance(m, nn.Linear):
-                # 初始化权重
                 if init_type == 'zero':
                     nn.init.zeros_(m.weight)
                     nn.init.zeros_(m.bias)
                 elif init_type == 'normal':
                     nn.init.normal_(m.weight,mean=self.mean,std=self.std)
-                   # nn.init.normal_(m.bias, mean=self.mean, std=self.std)
                     if m.bias is not None:
                         nn.init.zeros_(m.bias)
 
@@ -332,49 +296,7 @@ class Model(nn.Module):
                     nn.init.zeros_(m.bias)
                 else:
                     pass
-    def bernoulli_gumbel_rsample(self, distribution_matrix):
-        b, c, d = distribution_matrix.shape
-
-        flatten_matrix = rearrange(distribution_matrix, 'b c d -> (b c d) 1')
-        r_flatten_matrix = 1 - flatten_matrix
-
-        log_flatten_matrix = torch.log(flatten_matrix / r_flatten_matrix)
-        log_r_flatten_matrix = torch.log(r_flatten_matrix / flatten_matrix)
-
-        new_matrix = torch.concat([log_flatten_matrix, log_r_flatten_matrix], dim=-1)
-        resample_matrix = gumbel_softmax(new_matrix, hard=True)
-
-        resample_matrix = rearrange(resample_matrix[..., 0], '(b c d) -> b c d', b=b, c=c, d=d)
-        return resample_matrix
-    def compute_masked_statistics(self, x_enc, resample_matrix):
-        # 假设 resample_matrix 是二值矩阵，1表示保留，0表示屏蔽
-        # x_enc 形状为 [B, S, D]
-        # resample_matrix 形状为 [B, S, D]
-
-        # 计算每个特征维度上有效的(未被屏蔽的)样本数量
-        valid_counts = torch.sum(resample_matrix, dim=2, keepdim=True)  # [B, 1, D]
-        #print(valid_counts[1,:,:])
-        # 防止除零
-        valid_counts = torch.clamp(valid_counts, min=1.0)
-
-        # 计算屏蔽后的均值 (只考虑未屏蔽的值)
-        masked_sum = torch.sum(x_enc * resample_matrix, dim=2, keepdim=True)  # [B, 1, D]
-        masked_mean = masked_sum / valid_counts  # [B, 1, D]
-
-        # 计算屏蔽后的方差
-        squared_diff = (x_enc - masked_mean) ** 2
-        masked_squared_diff = squared_diff * resample_matrix  # 只考虑未屏蔽的值
-        masked_var = torch.sum(masked_squared_diff, dim=2, keepdim=True) / valid_counts  # [B, 1, D]
-
-        # 计算屏蔽后的标准差
-        masked_std = torch.sqrt(masked_var)  # 添加小常数防止数值不稳定
-
-        # 如果你需要计算所有批次的最终均值和标准差
-        # last_masked_mean = masked_mean.mean(2, keepdim=True)  # [B, 1, 1]
-        # last_masked_std = masked_std.mean(2, keepdim=True)  # [B, 1, 1]
-
-        return masked_mean, masked_std#, last_masked_mean, last_masked_std
-
+   
 
 
 
