@@ -93,7 +93,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         if self.args.cycle == True:
                             if self.args.model == "CycleNet":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark,batch_cycle)
-                            elif self.args.model == "Model":
+                            elif self.args.model == "SoloLinear":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_point_y)
                             else:
                                 outputs  = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
@@ -214,7 +214,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         if self.args.cycle == True:
                             if self.args.model == "CycleNet":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_cycle)
-                            elif self.args.model == "Model":
+                            elif self.args.model == "SoloLinear":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_point_y)
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
@@ -336,7 +336,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         if self.args.cycle == True:
                             if self.args.model == "CycleNet":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_cycle)
-                            elif self.args.model == "Model":
+                            elif self.args.model == "SoloLinear":
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_point_y)
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)

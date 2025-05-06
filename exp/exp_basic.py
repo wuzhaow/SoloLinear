@@ -3,7 +3,7 @@ import torch
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM, iTransformer, \
     Koopa, TiDE, FreTS, TimeMixer, TSMixer, SegRNN, MambaSimple, TemporalFusionTransformer, SCINet, TimeXer, \
-    FITS, DUET,CycleNet,PaiFilter,TexFilter, PatchMLP, SparseTSF, Model
+    FITS, DUET,CycleNet,PaiFilter,TexFilter, PatchMLP, SparseTSF, SoloLinear
 from thop import profile
 
 class Exp_Basic(object):
@@ -43,7 +43,7 @@ class Exp_Basic(object):
             'PaiFilter': PaiFilter,
             'TexFilter': TexFilter,
             'SparseTSF': SparseTSF,
-            'Model': Model
+            'SoloLinear': SoloLinear
         }
         if args.model == 'Mamba':
             print('Please make sure you have successfully installed mamba_ssm')
