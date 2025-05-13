@@ -85,7 +85,7 @@ if __name__ == '__main__':
                         help='0: channel dependence 1: channel independence for FreTS model')
     parser.add_argument('--decomp_method', type=str, default='moving_avg',
                         help='method of series decompsition, only support moving_avg or dft_decomp')
-    parser.add_argument('--init_type', type=str, default="normal", help="zero、normal、uniform")
+    parser.add_argument('--init_type', type=str, default="zero", help="zero、normal、uniform")
     parser.add_argument('--mean', type=float, default=0.0, help='mean')
     parser.add_argument('--std', type=float, default=0.01, help='std')
     parser.add_argument('--use_norm', type=int, default=1, help='whether to use normalize; True 1 False 0')
