@@ -279,7 +279,7 @@ class Model(nn.Module):
 
         return dec_out
 
-    def init_linear_weights(self, init_type='zero'):
+    def init_linear_weights(self, init_type):
        
         for m in self.modules():  
             if isinstance(m, nn.Linear):
