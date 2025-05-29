@@ -24,6 +24,7 @@ python3 -u run.py \
     --des ${des} \
     --cycle True \
     --cycle_len 24 \
+    --use_inorm  1 \
     --batch_size 4 \
     --init_type normal \
     --itr 1
@@ -50,6 +51,7 @@ python3 -u run.py \
     --des ${des} \
     --cycle True \
     --cycle_len 24 \
+    --use_inorm  1 \
     --batch_size 4 \
     --init_type normal \
     --itr 1
@@ -75,6 +77,7 @@ python3 -u run.py \
     --des ${des} \
     --cycle True \
     --cycle_len 24 \
+    --use_inorm  1 \
     --batch_size 4 \
     --itr 1
 # traffic_96_720
@@ -99,5 +102,6 @@ python3 -u run.py \
     --des ${des} \
     --cycle True \
     --cycle_len 24 \
+    --use_inorm  1 \
     --batch_size 4 \
     --itr 1
