@@ -21,12 +21,6 @@ Install required packages using pip:
 pip install -r requirements.txt
 ```
 
-Alternatively, for users in China, you can use Tsinghua mirror for faster installation:
-
-```bash
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
-
 ## Quick Start
 
 ### Running Training Scripts
