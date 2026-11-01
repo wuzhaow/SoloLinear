@@ -1,6 +1,12 @@
 # SoloLinear
 
-This repository is the official implementation for the paper: **SoloLinear: Time Series Forecasting with One Single Endogenous Point**
+This repository contains the official implementation of the paper:
+
+**[Less is more: Challenging the necessity of full endogenous history context in time series forecasting](https://www.sciencedirect.com/science/article/pii/S0950705126016060)**
+
+**Journal:** Knowledge-Based Systems (2026)
+
+**Paper:** [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S0950705126016060)
 
 ## Installation
 
